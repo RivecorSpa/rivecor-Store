@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: #070A0F;
+  font-family: Inter, sans-serif;
+}
+.brands-track {
+  display: flex;
+  width: max-content;
+  animation: brandsScroll 30s linear infinite;
+}
+
+.brands-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes brandsScroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}

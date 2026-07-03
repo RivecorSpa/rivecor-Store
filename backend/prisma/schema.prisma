@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  sku         String  @unique
+  name        String
+  brand       String
+
+  category    String
+
+  vehicleType String?
+
+  width       String?
+  profile     String?
+  rim         String
+
+  size        String
+
+  price       Float
+  offerPrice  Float?
+  stock       Int
+
+  imageUrl    String?
+  description String?
+
+  active      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orderItems OrderItem[]
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  name     String
+  email    String  @unique
+  password String
+  role     String  @default("CLIENT")
+  active   Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Customer {
+  id      Int     @id @default(autoincrement())
+  name    String
+  rut     String?
+  email   String
+  phone   String?
+  address String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Order {
+  id   Int    @id @default(autoincrement())
+  code String @unique
+
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  status         String  @default("PENDIENTE")
+  paymentMethod  String?
+  deliveryMethod String?
+  address        String?
+   history        Json? 
+
+  subtotal      Float
+  servicesTotal Float @default(0)
+  shipping      Float @default(0)
+  total         Float
+
+  // GETNET
+  reference        String?
+  getnetRequestId  String?
+  getnetProcessUrl String?
+  paymentStatus    String? @default("PENDING")
+  paymentProvider  String? @default("GETNET")
+  paymentPayload   Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+
+  orderId Int
+  order   Order @relation(fields: [orderId], references: [id])
+
+  productId Int?
+  product   Product? @relation(fields: [productId], references: [id])
+
+  name      String
+  brand     String?
+  size      String?
+  quantity  Int
+  unitPrice Float
+  total     Float
+  services  Json?
+
+  createdAt DateTime @default(now())
+}
