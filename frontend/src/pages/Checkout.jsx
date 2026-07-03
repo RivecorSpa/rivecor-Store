@@ -403,7 +403,7 @@ className="w-full p-4 rounded-xl bg-black border border-white/10 focus:border-ye
     type="button"
     onClick={() =>
       window.open(
-        `https://wa.me/569XXXXXXXX?text=${encodeURIComponent(
+        `https://wa.me/+56959511138text=${encodeURIComponent(
           `Hola, necesito ayuda con mi compra.\n\nEstoy realizando un pedido en Rivecor Store y tengo una consulta antes de pagar.`
         )}`,
         "_blank"
