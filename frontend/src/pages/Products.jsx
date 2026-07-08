@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Search, SlidersHorizontal, Truck, Wrench } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = "https://rivecor-store-production.up.railway.app/api";
 
 export default function Products() {
   const [products, setProducts] = useState([]);

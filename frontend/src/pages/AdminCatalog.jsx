@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = "https://rivecor-store-production.up.railway.app/api";
 const PAGE_SIZE = 5;
 
 export default function AdminCatalog() {

@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = "https://rivecor-store-production.up.railway.app/api";
 
 export default function Login() {
   const navigate = useNavigate();

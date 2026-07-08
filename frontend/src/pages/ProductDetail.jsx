@@ -12,7 +12,8 @@ import {
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 
-const API_URL = "http://localhost:3001/api";
+const API_URL = "https://rivecor-store-production.up.railway.app/api";
+const WHATSAPP_PHONE = "56959511138";
 
 const services = [
   { id: "install", name: "Instalación", price: 20000 },
@@ -160,6 +161,23 @@ console.log(
   }, 0);
 
   const total = unitPrice * quantity + servicesTotal;
+  const whatsappMessage = `Hola 👋
+
+Quiero consultar por este producto.
+
+🛞 Producto: ${product.name}
+🏷️ Marca: ${product.brand}
+📏 Medida: ${product.size}
+💰 Precio: $${unitPrice.toLocaleString("es-CL")}
+
+🔗 Link:
+${window.location.href}
+
+¿Podrían ayudarme por favor?`;
+
+const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
+  whatsappMessage
+)}`;
 
   const specs = [
     `Categoría ${product.category || "-"}`,
@@ -381,6 +399,14 @@ console.log(
 >
   Comprar ahora
 </button>
+<a
+  href={whatsappUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="mt-3 flex w-full items-center justify-center rounded-2xl bg-green-500 px-6 py-5 text-lg font-black text-white transition hover:bg-green-600"
+>
+  Consultar por WhatsApp
+</a>
           </motion.aside>
         </section>
 

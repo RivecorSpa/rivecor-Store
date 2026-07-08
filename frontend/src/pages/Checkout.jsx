@@ -3,7 +3,7 @@ import { useCart } from "../context/CartContext";
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  "http://localhost:3001/api";
+  "https://rivecor-store-production.up.railway.app/api";
 
 export default function Checkout() {
   const {

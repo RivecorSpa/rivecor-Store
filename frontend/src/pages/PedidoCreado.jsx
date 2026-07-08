@@ -36,11 +36,16 @@ export default function PedidoCreado() {
     (s) => s.key === order.status
   );
 
-  const phone = "56912345678";
+  const phone = "56959511138";
 
-  const message = `Hola, realicé el pedido ${
-    order.code
-  } por $${Number(order.total).toLocaleString("es-CL")}`;
+const message = `Hola 👋
+
+Necesito ayuda con mi pedido.
+
+📦 Pedido: ${order.code}
+💰 Total: $${Number(order.total).toLocaleString("es-CL")}
+
+¿Podrían ayudarme por favor?`;
 
   return (
     <main className="min-h-screen bg-[#070A0F] text-white p-6 flex items-center justify-center">

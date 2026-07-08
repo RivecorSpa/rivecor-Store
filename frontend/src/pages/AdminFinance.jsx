@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const salesByMonth = [
   { month: "Ene", ventas: 3200000 },
@@ -51,9 +52,11 @@ export default function AdminFinance() {
   loadMetrics();
 }, []);
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const loadMetrics = async () => {
   try {
-    const res = await fetch("http://localhost:3001/api/dashboard");
+    const res = await fetch(`${API_URL}/dashboard`);
     const data = await res.json();
 
     setMetrics({
