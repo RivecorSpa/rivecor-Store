@@ -64,12 +64,13 @@ exports.getProducts = async (req, res) => {
 
     res.json(products);
   } catch (error) {
-    console.error(error);
+  console.error("ERROR GET PRODUCTS");
+  console.error(error);
 
-    res.status(500).json({
-      error: "Error obteniendo productos",
-    });
-  }
+  return res.status(500).json({
+    error: error.message,
+  });
+}
 };
 exports.getFilters = async (req, res) => {
   try {
@@ -150,10 +151,15 @@ console.log("ROWS:", rows);
     let imported = 0;
 
     for (const row of rows) {
-      console.log("Fila:", row);
+  const sku = String(row["SKU"] || "").trim();
+
+  if (!sku) {
+    console.log("Fila omitida por SKU vacío:", row);
+    continue;
+  }
       await prisma.product.upsert({
         where: {
-          sku: String(row["SKU"]).trim(),
+          sku,
         },
         update: {
           name: row["Nombre"] || "",
@@ -163,7 +169,7 @@ console.log("ROWS:", rows);
   width: String(row["Ancho"] || ""),
   profile: String(row["Perfil"] || ""),
   rim: String(row["Aro"] || ""),
-  size: row["Medida"] || "",
+  size: String(row["Medida"] || ""),
   price: Number(row["Precio"] || 0),
   offerPrice: null,
   stock: Number(row["Stock"] || 0),
@@ -172,7 +178,7 @@ console.log("ROWS:", rows);
   active: true,
 },
         create: {
-          sku: String(row["SKU"]).trim(),
+          sku,
   name: row["Nombre"] || "",
   brand: row["Marca"] || "",
   category: row["Categoría"] || "",
@@ -180,7 +186,7 @@ console.log("ROWS:", rows);
   width: String(row["Ancho"] || ""),
   profile: String(row["Perfil"] || ""),
   rim: String(row["Aro"] || ""),
-  size: row["Medida"] || "",
+  size: String(row["Medida"] || ""),
   price: Number(row["Precio"] || 0),
   offerPrice: null,
   stock: Number(row["Stock"] || 0),
@@ -189,7 +195,6 @@ console.log("ROWS:", rows);
   active: true,
 },
       });
-      const product =
 
       imported++;
     }
@@ -199,12 +204,14 @@ console.log("ROWS:", rows);
       imported,
     });
   } catch (error) {
-    console.error(error);
+  console.error("===== ERROR IMPORT EXCEL =====");
+  console.error(error);
+  console.error(error.stack);
 
-    res.status(500).json({
-      error: "Error importando Excel",
-    });
-  }
+  return res.status(500).json({
+    error: error.message,
+  });
+}
 };
 exports.updateProduct = async (req, res) => {
   try {
