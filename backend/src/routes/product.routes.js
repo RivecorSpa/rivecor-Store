@@ -4,6 +4,7 @@ const multer = require("multer");
 const {
   importExcel,
   getProducts,
+  getFilters,
   getProductById,
   updateProduct,
   deleteProduct,
@@ -14,6 +15,7 @@ const upload = multer({
 });
 
 router.get("/", getProducts);
+router.get("/filters", getFilters);
 router.get("/:id", getProductById);
 
 router.post(
