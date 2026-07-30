@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "https://rivecor-store-production.up.railway.app/api";
+const API_URL = import.meta.env.VITE_API_URL;
 const PAGE_SIZE = 5;
 
 export default function AdminCatalog() {
@@ -37,7 +37,8 @@ export default function AdminCatalog() {
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "null");
-
+console.log("API_URL =", API_URL);
+console.log("URL =", `${API_URL}/products/import-excel`);
   useEffect(() => {
     if (!token || user?.role !== "ADMIN") {
       navigate("/login");
@@ -52,7 +53,18 @@ export default function AdminCatalog() {
       setLoadingProducts(true);
 
       const res = await fetch(`${API_URL}/products`);
-      const data = await res.json();
+      const text = await res.text();
+
+console.log("STATUS:", res.status);
+console.log("RESPUESTA:", text);
+
+let data = {};
+
+try {
+  data = JSON.parse(text);
+} catch (e) {
+  console.error("La respuesta no es JSON");
+}
 
       setProducts(Array.isArray(data) ? data : []);
     } catch {

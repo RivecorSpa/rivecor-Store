@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Search, SlidersHorizontal, Truck, Wrench } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-const API_URL = "https://rivecor-store-production.up.railway.app/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -12,37 +12,41 @@ export default function Products() {
   const [rim, setRim] = useState("Todos");
   const [brand, setBrand] = useState("Todas");
   const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+
+const categoryParam = searchParams.get("category");
+const widthParam = searchParams.get("width");
+const profileParam = searchParams.get("profile");
+const rimParam = searchParams.get("rim");
 
   const loadProducts = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`${API_URL}/products`);
-      const data = await res.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Error cargando productos", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+
+    const params = new URLSearchParams();
+
+    if (categoryParam) params.append("category", categoryParam);
+    if (widthParam) params.append("width", widthParam);
+    if (profileParam) params.append("profile", profileParam);
+    if (rimParam) params.append("rim", rimParam);
+
+    const res = await fetch(
+      `${API_URL}/products?${params.toString()}`
+    );
+
+    const data = await res.json();
+    setProducts(data);
+  } catch (error) {
+    console.error("Error cargando productos", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  },[categoryParam, widthParam, profileParam, rimParam]);
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
-      const text = `${product.name} ${product.brand} ${product.category} ${product.size}`.toLowerCase();
-
-      const matchSearch = text.includes(search.toLowerCase());
-      const matchCategory =
-        category === "Todas" || product.category === category;
-      const matchRim = rim === "Todos" || String(product.rim) === String(rim);
-      const matchBrand = brand === "Todas" || product.brand === brand;
-
-      return matchSearch && matchCategory && matchRim && matchBrand;
-    });
-  }, [products, search, category, rim, brand]);
 
   const categories = ["Todas", ...new Set(products.map((p) => p.category))];
   const rims = ["Todos", ...new Set(products.map((p) => String(p.rim)))];
@@ -111,7 +115,7 @@ export default function Products() {
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-10 text-center text-white/50">
             Cargando productos...
           </div>
-        ) : filteredProducts.length === 0 ? (
+        ) : products.length === 0 ? (
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-10 text-center">
             <h2 className="text-2xl font-black">No hay productos</h2>
             <p className="mt-2 text-white/45">
@@ -120,7 +124,7 @@ export default function Products() {
           </div>
         ) : (
           <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-4">
-            {filteredProducts.map((product, index) => (
+            {products.map((product, index) => (
               <motion.article
                 key={product.id}
                 initial={{ opacity: 0, y: 34 }}

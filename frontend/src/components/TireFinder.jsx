@@ -7,44 +7,8 @@ import {
   Warehouse,
   Bus,
 } from "lucide-react";
-import { useState } from "react";
-const profilesByWidth = {
-  "175": ["65", "70"],
-  "185": ["60", "65"],
-  "195": ["50", "55", "65"],
-  "205": ["50", "55", "60", "65"],
-  "215": ["55", "60", "65"],
-  "225": ["45", "50", "55", "60", "65"],
-  "235": ["45", "50", "55"],
-  "245": ["45", "50", "55"],
-  "255": ["50", "55"],
-  "265": ["60", "65"],
-  "275": ["70", "80"],
-  "295": ["75", "80"],
-  "315": ["70", "80"],
-  "385": ["65"],
-  "420": ["70", "85"],
-  "480": ["70", "80"],
-  "520": ["70", "85"],
-  "600": ["65", "70"],
-
-  "10.00": ["20"],
-  "12.00": ["20"],
-  "14.00": ["24"],
-};
-const rimsByProfile = {
-  "45": ["17", "18", "19"],
-  "50": ["16", "17", "18"],
-  "55": ["16", "17"],
-  "60": ["15", "16", "17"],
-  "65": ["15", "16"],
-  "70": ["22.5"],
-  "75": ["22.5"],
-  "80": ["22.5"],
-  "20": ["20"],
-  "24": ["24"],
-  "85": ["38"],
-};
+import { useState, useEffect } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 const tireImages = {
   AUTO: "/tire-auto.png",
   SUV: "/tire-suv.png",
@@ -54,15 +18,7 @@ const tireImages = {
   INDUSTRIAL: "/tire-industrial.png",
   BUS: "/tire-bus.png",
 };
-const widthsByCategory = {
-  AUTO: ["175", "185", "195", "205", "215", "225", "235"],
-  SUV: ["215", "225", "235", "245", "255", "265"],
-  CAMIONETA: ["215", "225", "235", "245", "265"],
-  CAMION: ["275", "295", "315", "385"],
-  AGRICOLA: ["420", "480", "520", "600"],
-  INDUSTRIAL: ["10.00", "12.00", "14.00"],
-  BUS: ["275", "295", "315"],
-};
+
 const categories = [
   {
     id: "AUTO",
@@ -102,11 +58,28 @@ const categories = [
 ];
 
 export default function TireFinder() {
-  const [category, setCategory] = useState("AUTO");
-const [width, setWidth] = useState("");
-const [profile, setProfile] = useState("");
-const [rim, setRim] = useState("");
-const navigate = useNavigate();
+
+    const [category, setCategory] = useState("AUTO");
+  const [width, setWidth] = useState("");
+  const [profile, setProfile] = useState("");
+  const [rim, setRim] = useState("");
+
+  const [widths, setWidths] = useState([]);
+  const [profiles, setProfiles] = useState([]);
+  const [rims, setRims] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch(`${API_URL}/products/filters?category=${category}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setWidths(data.widths || []);
+        setProfiles(data.profiles || []);
+        setRims(data.rims || []);
+      })
+      .catch(console.error);
+  }, [category]);
   return (
     <motion.div
       initial={{ opacity: 0, x: 30 }}
@@ -186,7 +159,7 @@ const navigate = useNavigate();
     
   <option value="">Ancho</option>
 
-  {widthsByCategory[category].map((w) => (
+  {widths.map((w) => (
     <option key={w} value={w}>
   {w}
 </option>
@@ -204,7 +177,7 @@ const navigate = useNavigate();
 >
   <option value="">Perfil</option>
 
-  {(profilesByWidth[width] || []).map((p) => (
+  {profiles.map((p) => (
     <option key={p} value={p}>
   {p}
 </option>
@@ -220,7 +193,7 @@ const navigate = useNavigate();
 >
   <option value="">Aro</option>
 
-  {(rimsByProfile[profile] || []).map((r) => (
+  {rims.map((r) => (
     <option key={r} value={r}>
   {r}
 </option>
