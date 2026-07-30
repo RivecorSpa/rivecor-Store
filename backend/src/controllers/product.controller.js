@@ -63,7 +63,7 @@ exports.getProducts = async (req, res) => {
     });
 
     res.json(products);
-  } catch (error) {
+  }catch (error) {
   console.error("ERROR GET PRODUCTS");
   console.error(error);
 
