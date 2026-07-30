@@ -13,7 +13,7 @@ const tireImages = {
   AUTO: "/tire-auto.png",
   SUV: "/tire-suv.png",
   CAMIONETA: "/tire-camioneta.png",
-  CAMION: "/tire-camion.png",
+  CAMION: "/tire-camionv2.png",
   AGRICOLA: "/tire-agricola.png",
   INDUSTRIAL: "/tire-industrial.png",
   BUS: "/tire-bus.png",
