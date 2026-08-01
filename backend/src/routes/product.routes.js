@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const multer = require("multer");
+const upload = require("../middleware/uploadProductImage");
 
 const {
   importExcel,
@@ -8,9 +9,10 @@ const {
   getProductById,
   updateProduct,
   deleteProduct,
+  uploadImage,
 } = require("../controllers/product.controller");
 
-const upload = multer({
+const excelUpload = multer({
   dest: "uploads/",
 });
 
@@ -20,9 +22,18 @@ router.get("/:id", getProductById);
 
 router.post(
   "/import-excel",
-  upload.single("file"),
+  excelUpload.single("file"),
   importExcel
 );
+
 router.put("/:id", updateProduct);
+
+router.post(
+  "/:id/image",
+  upload.single("image"),
+  uploadImage
+);
+
 router.delete("/:id", deleteProduct);
+
 module.exports = router;

@@ -1,5 +1,7 @@
 const XLSX = require("xlsx");
 const { PrismaClient } = require("@prisma/client");
+const path = require("path");
+const fs = require("fs");
 
 const prisma = new PrismaClient();
 
@@ -305,6 +307,59 @@ exports.getProductById = async (req, res) => {
 
     res.status(500).json({
       error: "Error obteniendo producto",
+    });
+  }
+};
+exports.uploadImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: "Debe seleccionar una imagen",
+      });
+    }
+
+    const product = await prisma.product.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    if (!product) {
+      return res.status(404).json({
+        error: "Producto no encontrado",
+      });
+    }
+
+    const extension = path.extname(req.file.originalname);
+
+    const newFileName = `${product.sku}${extension}`;
+
+    const destination = path.join(
+      __dirname,
+      "../../uploads/products",
+      newFileName
+    );
+
+    fs.renameSync(req.file.path, destination);
+
+    const updated = await prisma.product.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        imageUrl: `/uploads/products/${newFileName}`,
+      },
+    });
+
+    res.json(updated);
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message,
     });
   }
 };

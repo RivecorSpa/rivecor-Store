@@ -1,5 +1,6 @@
 require("dotenv").config();
 console.log("DATABASE_URL =", process.env.DATABASE_URL);
+const path = require("path");
 
 const express = require("express");
 const cors = require("cors");
@@ -14,6 +15,11 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
 app.use("/api/products", productRoutes);
 app.use("/api/auth", authRoutes);
