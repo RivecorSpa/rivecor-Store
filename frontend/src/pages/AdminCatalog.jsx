@@ -37,6 +37,19 @@ export default function AdminCatalog() {
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "null");
+
+const [selectedImage, setSelectedImage] = useState(null);
+const [previewImage, setPreviewImage] = useState("");
+
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  setSelectedImage(file);
+  setPreviewImage(URL.createObjectURL(file));
+};
+
 console.log("API_URL =", API_URL);
 console.log("URL =", `${API_URL}/products/import-excel`);
   useEffect(() => {
@@ -152,6 +165,9 @@ try {
   const openEdit = (product) => {
   setHasOffer(product.offerPrice !== null);
 
+  setSelectedImage(null);
+  setPreviewImage("");
+
   setEditingProduct({
     ...product,
     price: String(product.price ?? ""),
@@ -203,12 +219,35 @@ try {
       if (!res.ok) {
         throw new Error(data.error || "Error actualizando producto");
       }
+      if (selectedImage) {
+  const formData = new FormData();
+
+  formData.append("image", selectedImage);
+
+  const imageRes = await fetch(
+    `${API_URL}/products/${editingProduct.id}/image`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const imageData = await imageRes.json();
+
+  if (!imageRes.ok) {
+    throw new Error(imageData.error || "Error subiendo imagen");
+  }
+
+  data.imageUrl = imageData.imageUrl;
+}
 
       setProducts((prev) =>
         prev.map((product) => (product.id === data.id ? data : product))
       );
 
       setEditingProduct(null);
+      setSelectedImage(null);
+      setPreviewImage("");
       setMessage("Producto actualizado correctamente");
     } catch (error) {
       setMessage(error.message || "Error guardando producto");
@@ -558,23 +597,21 @@ Number(editingProduct.offerPrice) < Number(editingProduct.price) && (
 
     <div className="overflow-hidden rounded-2xl bg-[#111]">
 
-      {editingProduct.imageUrl ? (
+      {previewImage || editingProduct.imageUrl ? (
 
-        <img
-          src={editingProduct.imageUrl}
-          alt={editingProduct.name}
-          className="h-72 w-full object-cover"
-        />
+  <img
+    src={previewImage || editingProduct.imageUrl}
+    alt={editingProduct.name}
+    className="h-72 w-full object-cover rounded-2xl"
+  />
 
-      ) : (
+) : (
 
-        <div className="flex h-72 items-center justify-center text-white/30">
+  <div className="flex h-72 items-center justify-center text-white/30">
+    Sin imagen
+  </div>
 
-          Sin imagen
-
-        </div>
-
-      )}
+)}
 
     </div>
 
@@ -623,7 +660,18 @@ Number(editingProduct.offerPrice) < Number(editingProduct.price) && (
       </strong>
 
     </div>
+<div className="space-y-3">
+  <label className="block text-sm font-bold text-white/55">
+    Imagen del producto
+  </label>
 
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageChange}
+    className="w-full rounded-2xl border border-white/10 bg-black/40 px-5 py-4 text-white file:mr-4 file:rounded-lg file:border-0 file:bg-yellow-400 file:px-4 file:py-2 file:font-bold file:text-black"
+  />
+</div>
   </div>
 
 </div>
@@ -634,12 +682,6 @@ value={editingProduct.stock}
 onChange={(v)=>updateField("stock",v)}
 />
 
-<Input
-label="URL imagen"
-value={editingProduct.imageUrl}
-onChange={(v)=>updateField("imageUrl",v)}
-className="md:col-span-2"
-/>
 </div>
             </div>
 
