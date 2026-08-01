@@ -219,9 +219,11 @@ try {
       if (!res.ok) {
         throw new Error(data.error || "Error actualizando producto");
       }
+      console.log("selectedImage:", selectedImage);
       if (selectedImage) {
-  const formData = new FormData();
+  console.log("Subiendo imagen...");
 
+  const formData = new FormData();
   formData.append("image", selectedImage);
 
   const imageRes = await fetch(
