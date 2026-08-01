@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const multer = require("multer");
-const upload = require("../middleware/uploadProductImage");
+const upload = require("../middlewares/uploadProductImage");
 
 const {
   importExcel,
