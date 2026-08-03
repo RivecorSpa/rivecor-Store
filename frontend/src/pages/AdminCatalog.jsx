@@ -602,7 +602,12 @@ Number(editingProduct.offerPrice) < Number(editingProduct.price) && (
       {previewImage || editingProduct.imageUrl ? (
 
   <img
-    src={previewImage || editingProduct.imageUrl}
+    src={
+  previewImage ||
+  (editingProduct.imageUrl?.startsWith("/uploads")
+    ? `${API_URL.replace("/api", "")}${editingProduct.imageUrl}`
+    : editingProduct.imageUrl)
+}
     alt={editingProduct.name}
     className="h-72 w-full object-cover rounded-2xl"
   />
@@ -742,7 +747,11 @@ function ProductCard({ product, onEdit, onToggle, onDelete }) {
         <div className="h-22 w-22 overflow-hidden rounded-2xl bg-black">
           {product.imageUrl ? (
             <img
-              src={product.imageUrl}
+              src={
+  product.imageUrl?.startsWith("/uploads")
+    ? `${API_URL.replace("/api", "")}${product.imageUrl}`
+    : product.imageUrl
+}
               alt={product.name}
               className="h-22 w-22 object-cover"
             />

@@ -136,7 +136,11 @@ const rimParam = searchParams.get("rim");
                 <div className="relative h-[260px] overflow-hidden bg-black">
                   {product.imageUrl ? (
                     <img
-                      src={product.imageUrl}
+                      src={
+  product.imageUrl?.startsWith("/uploads")
+    ? `${API_URL.replace("/api", "")}${product.imageUrl}`
+    : product.imageUrl
+}
                       alt={product.name}
                       className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                     />
