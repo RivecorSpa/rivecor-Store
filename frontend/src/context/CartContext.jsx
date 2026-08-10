@@ -22,20 +22,33 @@ export function CartProvider({ children }) {
   );
 }, [items]);
 
-  const addItem = (product) => {
+  const addItem = (product, options = {}) => {
     setItems((prev) => {
       const quantityToAdd = product.quantity || 1;
       const exists = prev.find((item) => item.id === product.id);
 
       if (exists) {
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + quantityToAdd }
-            : item
-        );
-      }
+  return prev.map((item) =>
+    item.id === product.id
+      ? {
+          ...item,
+          quantity: item.quantity + quantityToAdd,
+          services: options.services || item.services,
+          notes: options.notes || item.notes,
+        }
+      : item
+  );
+}
 
-      return [...prev, { ...product, quantity: quantityToAdd }];
+      return [
+  ...prev,
+  {
+    ...product,
+    quantity: quantityToAdd,
+    services: options.services || [],
+    notes: options.notes || "",
+  },
+];
     });
   };
 

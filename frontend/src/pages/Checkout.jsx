@@ -176,6 +176,38 @@ const total =
   return (
     <main className="min-h-screen bg-[#070A0F] text-white p-6 flex justify-center">
       <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8">
+        <div className="md:col-span-2 mb-8">
+
+  <div className="flex items-center justify-center gap-4 text-sm font-bold">
+
+    <div className="flex items-center gap-2 text-yellow-400">
+      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-yellow-400 text-black">
+        1
+      </span>
+      Carrito
+    </div>
+
+    <div className="h-[2px] w-14 bg-yellow-400"></div>
+
+    <div className="flex items-center gap-2 text-yellow-400">
+      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-yellow-400 text-black">
+        2
+      </span>
+      Confirmación
+    </div>
+
+    <div className="h-[2px] w-14 bg-white/20"></div>
+
+    <div className="flex items-center gap-2 text-white/40">
+      <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20">
+        3
+      </span>
+      Pago
+    </div>
+
+  </div>
+
+</div>
 
         {/* 🧾 RESUMEN */}
         <div className="bg-[#0B0F17] p-6 rounded-3xl border border-white/10 shadow-xl">
@@ -194,10 +226,14 @@ const total =
     >
 
       <img
-        src={item.image}
-        alt={item.name}
-        className="h-20 w-20 rounded-xl object-cover bg-white"
-      />
+  src={
+    item.imageUrl?.startsWith("/uploads")
+      ? `${API_URL.replace("/api", "")}${item.imageUrl}`
+      : item.imageUrl
+  }
+  alt={item.name}
+  className="h-20 w-20 rounded-xl object-cover bg-white"
+/>
 
       <div className="flex-1">
 
@@ -300,41 +336,78 @@ const total =
         {/* 📦 FORM */}
         <div className="bg-[#0B0F17] p-6 rounded-3xl border border-white/10 shadow-xl">
 
-          <h2 className="text-2xl font-black mb-6">
-            📦 Datos de envío
-          </h2>
+          <h2 className="text-3xl font-black">
+  📋 Confirma tu compra
+</h2>
+
+<p className="mt-2 mb-6 text-white/50">
+  Revisa tus datos antes de continuar al pago seguro.
+</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
 <div className="mb-6">
 
 
-<h3 className="font-bold mb-3">
-Tipo de entrega
-</h3>
+<div className="grid md:grid-cols-2 gap-4">
 
-<label className="flex items-center gap-3 mb-3">
+  <button
+    type="button"
+    onClick={() => setShippingType("retiro")}
+    className={`rounded-2xl p-5 border transition ${
+      shippingType === "retiro"
+        ? "border-yellow-400 bg-yellow-400/10"
+        : "border-white/10 bg-black/30"
+    }`}
+  >
+    <h3 className="text-xl font-black">
+      📍 Retiro en tienda
+    </h3>
 
-<input
-type="radio"
-name="shipping"
-checked={shippingType==="retiro"}
-onChange={()=>setShippingType("retiro")}
-/>
+    <p className="mt-2 text-white/60">
+      Retira tu pedido en nuestra sucursal.
+    </p>
 
-Retiro en bodega
-</label>
+    <p className="mt-3 text-yellow-400 font-bold">
+      GRATIS
+    </p>
+  </button>
 
-<label className="flex items-center gap-3">
+  <button
+    type="button"
+    onClick={() => setShippingType("envio")}
+    className={`rounded-2xl p-5 border transition ${
+      shippingType === "envio"
+        ? "border-yellow-400 bg-yellow-400/10"
+        : "border-white/10 bg-black/30"
+    }`}
+  >
+    <h3 className="text-xl font-black">
+      🚚 Envío
+    </h3>
 
-<input
-type="radio"
-name="shipping"
-checked={shippingType==="envio"}
-onChange={()=>setShippingType("envio")}
-/>
+    <p className="mt-2 text-white/60">
+      Despacho a domicilio.
+    </p>
 
-Envío a domicilio
-</label>
+    <p className="mt-3 text-yellow-400 font-bold">
+      $12.990
+    </p>
+  </button>
+
+</div>
+{shippingType === "envio" && (
+  <div className="mt-4 mb-4 rounded-2xl border border-orange-500/20 bg-orange-500/10 p-4">
+
+    <h3 className="font-bold text-orange-300">
+      🚚 Información del despacho
+    </h3>
+
+    <p className="mt-2 text-sm text-white/70">
+      Una vez confirmado el pago, nos comunicaremos contigo para coordinar el despacho y confirmar la dirección de entrega.
+    </p>
+
+  </div>
+)}
 
 </div>
             <input
@@ -382,36 +455,59 @@ className="w-full p-4 rounded-xl bg-black border border-white/10 focus:border-ye
 
             {/* BOTÓN PRO */}
             <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-6 bg-yellow-400 text-black font-black py-4 rounded-2xl text-lg hover:scale-105 transition"
-            >
-              {loading ? "Procesando..." : "Confirmar pedido"}
-            </button>
-            <div className="mt-6 rounded-2xl border border-green-500/20 bg-green-500/5 p-5">
+  type="submit"
+  disabled={loading}
+  className="w-full mt-6 bg-yellow-400 text-black font-black py-4 rounded-2xl text-lg hover:scale-105 transition"
+>
+  {loading
+    ? "Preparando tu pago..."
+    : "Ir al pago seguro"}
+</button>
+
+<div className="mt-6 rounded-2xl border border-yellow-400/20 bg-yellow-400/5 p-5">
+
+  <h3 className="text-lg font-bold text-yellow-400">
+    🔒 Compra con confianza
+  </h3>
+
+  <div className="mt-4 space-y-3 text-sm text-white/70">
+
+    <p>✔ Tu pago se procesa de forma segura con Getnet.</p>
+
+    <p>✔ Tus datos están protegidos durante toda la compra.</p>
+
+    <p>✔ Todos nuestros productos cuentan con garantía.</p>
+
+    <p>✔ Si necesitas ayuda, nuestro equipo está disponible para apoyarte.</p>
+
+  </div>
+
+</div>
+
+<div className="mt-5 rounded-2xl border border-green-500/20 bg-green-500/5 p-5">
 
   <h3 className="text-lg font-bold text-green-400">
-    ❓ ¿Necesitas ayuda?
+    💬 ¿Necesitas ayuda?
   </h3>
 
   <p className="mt-2 text-sm text-white/60">
-    Si tienes dudas sobre stock, compatibilidad, despacho o instalación,
-    nuestros especialistas pueden ayudarte antes de finalizar tu compra.
+    Si tienes dudas sobre compatibilidad, stock, despacho o instalación,
+    uno de nuestros especialistas puede ayudarte antes de realizar el pago.
   </p>
 
   <button
     type="button"
     onClick={() =>
       window.open(
-        `https://wa.me/+56959511138text=${encodeURIComponent(
-          `Hola, necesito ayuda con mi compra.\n\nEstoy realizando un pedido en Rivecor Store y tengo una consulta antes de pagar.`
+        `https://wa.me/56959511138?text=${encodeURIComponent(
+          "Hola, necesito ayuda con mi compra en Rivecor Store."
         )}`,
         "_blank"
       )
     }
-    className="mt-4 w-full rounded-xl bg-green-600 py-3 font-bold text-white hover:bg-green-700 transition"
+    className="mt-4 w-full rounded-xl bg-green-600 py-3 font-bold text-white transition hover:bg-green-700"
   >
-    💬 Hablar con un especialista
+    Hablar con un especialista
   </button>
 
 </div>

@@ -30,6 +30,7 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [selectedServices, setSelectedServices] = useState([]);
   const [loading, setLoading] = useState(true);
+const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     loadProduct();
@@ -47,6 +48,7 @@ export default function ProductDetail() {
       }
 
       setProduct(data);
+setSelectedImage(data.imageUrl);
       setQuantity(Number(data.stock || 0) > 0 ? 1 : 0);
     } catch (error) {
       console.error(error);
@@ -203,61 +205,64 @@ const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
             animate={{ opacity: 1, y: 0 }}
             className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035]"
           >
-            <div className="relative h-[520px] overflow-hidden bg-black">
+            <div className="relative h-[520px] overflow-hidden rounded-3xl bg-[#F3F3F0]">
               {product.imageUrl ? (
                 <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="h-full w-full object-cover"
-                />
+  src={product.imageUrl}
+  alt={product.name}
+  className="h-full w-full object-contain p-10 transition duration-500 hover:scale-105"
+/>
               ) : (
                 <div className="flex h-full items-center justify-center text-white/30">
                   Sin imagen
                 </div>
               )}
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+
 
               <div className="absolute left-6 top-6 flex flex-wrap gap-3">
-                <span className="rounded-full bg-yellow-400 px-4 py-2 text-xs font-black text-black">
-                  {product.brand}
-                </span>
+                <span className="rounded-full bg-[#F9DD6F] px-4 py-2 text-xs font-black text-black shadow-sm">
+  {product.brand}
+</span>
 
-                <span className="rounded-full bg-black/70 px-4 py-2 text-xs font-bold text-white">
-                  {product.category}
-                </span>
+                <span className="rounded-full bg-[#5B6372] px-4 py-2 text-xs font-bold text-white shadow-sm">
+  {product.category}
+</span>
 
                 <span
-                  className={`rounded-full px-4 py-2 text-xs font-black ${
-                    stock > 0
-                      ? "bg-green-400/15 text-green-400"
-                      : "bg-red-400/15 text-red-400"
-                  }`}
-                >
-                  {stock > 0 ? `Stock ${stock}` : "Sin stock"}
-                </span>
+  className={`rounded-full px-4 py-2 text-xs font-black shadow-sm ${
+    stock > 0
+      ? "bg-[#71705C] text-white"
+      : "bg-red-500/15 text-red-500"
+  }`}
+>
+  {stock > 0 ? `Stock disponible` : "Sin stock"}
+</span>
               </div>
 
-              <div className="absolute bottom-6 left-6 right-6">
-                <p className="text-sm font-bold text-yellow-400">
-                  Medida {product.size}
-                </p>
-                <h1 className="mt-2 text-5xl font-black">{product.name}</h1>
-              </div>
+              <div className="absolute bottom-5 left-5">
+  <span className="rounded-full bg-[#F9DD6F] px-4 py-2 text-sm font-black text-black shadow-sm">
+    {product.size}
+  </span>
+</div>
             </div>
 
-            <div className="grid gap-4 p-6 md:grid-cols-3">
+            <div className="grid gap-4 border-t border-[#C1B782]/20 bg-[#5B6372]/10 p-6 md:grid-cols-3">
               <Info
-                icon={<ShieldCheck />}
-                title="Garantía"
-                text="Producto respaldado"
-              />
-              <Info icon={<Truck />} title="Entrega" text="Retiro o despacho" />
+  icon={<ShieldCheck />}
+  title="Compra con respaldo"
+  text="Producto con garantía"
+/>
               <Info
-                icon={<Wrench />}
-                title="Servicio"
-                text="Instalación disponible"
-              />
+  icon={<Truck />}
+  title="Retiro o despacho"
+  text="Elige cómo recibir tu compra"
+/>
+              <Info
+  icon={<Wrench />}
+  title="Instalación disponible"
+  text="Agrega el servicio al comprar"
+/>
             </div>
           </motion.div>
 
@@ -267,135 +272,232 @@ const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
             transition={{ delay: 0.1 }}
             className="h-fit rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 shadow-2xl"
           >
-            <p className="text-sm font-bold uppercase tracking-widest text-yellow-400">
-              Configurar compra
-            </p>
+            <div>
+  <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#C1B782]">
+    Neumático
+  </p>
 
-            <h2 className="mt-3 text-4xl font-black">{product.name}</h2>
+  <h2 className="mt-3 text-4xl font-black tracking-tight">
+    {product.name}
+  </h2>
 
-            <p className="mt-3 text-white/50">
-              {product.size} · Aro {product.rim} · {product.category}
-            </p>
+  <div className="mt-4 flex flex-wrap gap-2">
+    <span className="rounded-full bg-[#F9DD6F] px-3 py-1 text-xs font-black text-black">
+      {product.brand}
+    </span>
 
-            <div className="mt-7">
-              {product.offerPrice ? (
-                <div>
-                  <p className="text-lg text-white/30 line-through">
-                    ${Number(product.price).toLocaleString("es-CL")}
-                  </p>
-                  <p className="text-5xl font-black text-yellow-400">
-                    ${Number(product.offerPrice).toLocaleString("es-CL")}
-                  </p>
-                </div>
-              ) : (
-                <p className="text-5xl font-black text-yellow-400">
-                  ${Number(product.price).toLocaleString("es-CL")}
-                </p>
-              )}
-            </div>
+    <span className="rounded-full bg-[#5B6372] px-3 py-1 text-xs font-bold text-white">
+      {product.category}
+    </span>
+
+    <span className="rounded-full border border-[#C1B782]/30 px-3 py-1 text-xs font-bold text-[#C1B782]">
+      {product.size}
+    </span>
+  </div>
+</div>
+  <div className="mt-7">
+  <p className="mb-1 text-sm font-bold text-white/40">
+    Precio por unidad
+  </p>
+
+  {product.offerPrice ? (
+    <div>
+      <p className="text-lg text-white/30 line-through">
+        ${Number(product.price).toLocaleString("es-CL")}
+      </p>
+
+      <p className="text-5xl font-black text-[#F9DD6F]">
+        ${Number(product.offerPrice).toLocaleString("es-CL")}
+      </p>
+
+      <span className="mt-2 inline-flex rounded-full bg-[#71705C] px-3 py-1 text-xs font-black text-white">
+        Precio oferta
+      </span>
+    </div>
+  ) : (
+    <p className="text-5xl font-black text-[#F9DD6F]">
+      ${Number(product.price).toLocaleString("es-CL")}
+    </p>
+  )}
+</div>
+                
 
             <div
-              className={`mt-6 rounded-2xl border p-4 ${
-                stock > 0
-                  ? "border-green-400/20 bg-green-400/10 text-green-400"
-                  : "border-red-400/20 bg-red-400/10 text-red-400"
+  className={`mt-6 flex items-center gap-3 rounded-2xl border p-4 ${
+    stock > 0
+      ? "border-[#71705C]/40 bg-[#71705C]/10 text-white"
+      : "border-red-400/20 bg-red-400/10 text-red-400"
+  }`}
+>
+  <span
+    className={`h-3 w-3 rounded-full ${
+      stock > 0 ? "bg-[#71705C]" : "bg-red-400"
+    }`}
+  />
+
+  <div>
+    <p className="font-bold">
+      {stock > 0 ? "Disponible para compra" : "Producto sin stock"}
+    </p>
+
+    {stock > 0 && (
+      <p className="mt-1 text-sm text-white/45">
+        {stock} {stock === 1 ? "unidad disponible" : "unidades disponibles"}
+      </p>
+    )}
+  </div>
+</div>
+
+            <div className="mt-7">
+  <div className="mb-3 flex items-center justify-between">
+    <label className="text-sm font-bold text-white/60">
+      Cantidad
+    </label>
+
+    <span className="text-xs text-white/35">
+      Por unidad
+    </span>
+  </div>
+
+  <div className="flex w-fit items-center overflow-hidden rounded-2xl border border-[#5B6372]/40 bg-[#0B0F17]">
+    <button
+      type="button"
+      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+      disabled={stock <= 0}
+      className="flex h-12 w-12 items-center justify-center text-white transition hover:bg-[#5B6372]/20 hover:text-[#F9DD6F] disabled:opacity-30"
+    >
+      <Minus size={18} />
+    </button>
+
+    <span className="flex h-12 min-w-14 items-center justify-center border-x border-[#5B6372]/30 text-lg font-black">
+      {quantity}
+    </span>
+
+    <button
+      type="button"
+      onClick={() =>
+        setQuantity((q) => Math.min(stock, q + 1))
+      }
+      disabled={stock <= 0}
+      className="flex h-12 w-12 items-center justify-center text-white transition hover:bg-[#5B6372]/20 hover:text-[#F9DD6F] disabled:opacity-30"
+    >
+      <Plus size={18} />
+    </button>
+</div>
+            </div>
+
+            <div className="mt-7">
+  <div className="mb-3">
+    <label className="text-sm font-bold text-white/60">
+      ¿Necesitas algún servicio?
+    </label>
+
+    <p className="mt-1 text-xs text-white/35">
+      Puedes agregarlo junto con tus neumáticos.
+    </p>
+  </div>
+
+  <div className="grid gap-3">
+    {services.map((service) => {
+      const active = selectedServices.includes(service.id);
+
+      return (
+        <button
+          type="button"
+          key={service.id}
+          onClick={() => toggleService(service.id)}
+          className={`flex items-center justify-between rounded-2xl border p-4 text-left transition ${
+            active
+              ? "border-[#F9DD6F] bg-[#F9DD6F]/10"
+              : "border-[#5B6372]/30 bg-[#0B0F17] hover:border-[#C1B782]/50"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <span
+              className={`flex h-6 w-6 items-center justify-center rounded-md border ${
+                active
+                  ? "border-[#F9DD6F] bg-[#F9DD6F] text-black"
+                  : "border-white/20 bg-black/20"
               }`}
             >
-              {stock > 0
-                ? `Stock disponible: ${stock} unidades`
-                : "Producto sin stock"}
+              {active && <CheckCircle2 size={16} />}
+            </span>
+
+            <div>
+              <p
+                className={`font-bold ${
+                  active ? "text-[#F9DD6F]" : "text-white"
+                }`}
+              >
+                {service.name}
+              </p>
+
+              <p className="mt-1 text-xs text-white/35">
+                Servicio adicional
+              </p>
             </div>
+          </div>
 
-            <div className="mt-7">
-              <label className="mb-3 block text-sm font-bold text-white/60">
-                Cantidad
-              </label>
+          <span className="font-black text-[#C1B782]">
+            +${service.price.toLocaleString("es-CL")}
+          </span>
+        </button>
+      );
+    })}
+  </div>
+</div>
 
-              <div className="flex w-fit items-center rounded-2xl border border-white/10 bg-black/40">
-                <button
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  disabled={stock <= 0}
-                  className="p-4 text-white hover:text-yellow-400 disabled:opacity-30"
-                >
-                  <Minus size={18} />
-                </button>
+            
+            <div className="mt-7 rounded-2xl border border-[#5B6372]/30 bg-[#0B0F17] p-5">
+  <div className="flex justify-between text-sm text-white/45">
+    <span>Productos</span>
+    <span className="font-bold text-white/70">
+      ${(unitPrice * quantity).toLocaleString("es-CL")}
+    </span>
+  </div>
 
-                <span className="min-w-12 text-center text-xl font-black">
-                  {quantity}
-                </span>
+  {servicesTotal > 0 && (
+    <div className="mt-3 flex justify-between text-sm text-white/45">
+      <span>Servicios</span>
+      <span className="font-bold text-white/70">
+        ${servicesTotal.toLocaleString("es-CL")}
+      </span>
+    </div>
+  )}
 
-                <button
-                  onClick={() =>
-                    setQuantity((q) => Math.min(stock, q + 1))
-                  }
-                  disabled={stock <= 0}
-                  className="p-4 text-white hover:text-yellow-400 disabled:opacity-30"
-                >
-                  <Plus size={18} />
-                </button>
-              </div>
-            </div>
+  <div className="my-5 border-t border-[#5B6372]/30" />
 
-            <div className="mt-7">
-              <label className="mb-3 block text-sm font-bold text-white/60">
-                Servicios adicionales
-              </label>
+  <div className="flex items-end justify-between gap-4">
+    <div>
+      <p className="text-xs font-bold uppercase tracking-widest text-white/35">
+        Total de esta compra
+      </p>
 
-              <div className="grid gap-3">
-                {services.map((service) => {
-                  const active = selectedServices.includes(service.id);
+      <p className="mt-1 text-sm text-white/40">
+        Impuestos incluidos
+      </p>
+    </div>
 
-                  return (
-                    <button
-                      key={service.id}
-                      onClick={() => toggleService(service.id)}
-                      className={`flex items-center justify-between rounded-2xl border p-4 text-left transition ${
-                        active
-                          ? "border-yellow-400 bg-yellow-400 text-black"
-                          : "border-white/10 bg-black/35 text-white hover:border-yellow-400"
-                      }`}
-                    >
-                      <span className="font-bold">{service.name}</span>
-                      <span className="font-black">
-                        ${service.price.toLocaleString("es-CL")}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="mt-7 rounded-2xl bg-black/45 p-5">
-              <div className="flex justify-between text-white/50">
-                <span>Subtotal productos</span>
-                <span>${(unitPrice * quantity).toLocaleString("es-CL")}</span>
-              </div>
-
-              <div className="mt-3 flex justify-between text-white/50">
-                <span>Servicios</span>
-                <span>${servicesTotal.toLocaleString("es-CL")}</span>
-              </div>
-
-              <div className="mt-5 flex justify-between border-t border-white/10 pt-5 text-2xl font-black">
-                <span>Total</span>
-                <span className="text-yellow-400">
-                  ${total.toLocaleString("es-CL")}
-                </span>
-              </div>
-            </div>
+    <span className="text-3xl font-black text-[#F9DD6F]">
+      ${total.toLocaleString("es-CL")}
+    </span>
+  </div>
+</div>
 
             <button
-              onClick={handleAddToCart}
-              disabled={stock <= 0 || quantity <= 0}
-              className="mt-6 w-full rounded-2xl bg-yellow-400 px-6 py-5 text-lg font-black text-black transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Agregar al carrito
-            </button>
+  type="button"
+  onClick={handleAddToCart}
+  disabled={stock <= 0 || quantity <= 0}
+  className="mt-6 w-full rounded-2xl bg-[#F9DD6F] px-6 py-5 text-lg font-black text-black transition hover:bg-[#C1B782] disabled:cursor-not-allowed disabled:opacity-40"
+>
+  Agregar al carrito
+</button>
 
             <button
+  type="button"
   onClick={handleBuyNow}
   disabled={stock <= 0 || quantity <= 0}
-  className="mt-3 flex w-full items-center justify-center rounded-2xl border border-white/10 px-6 py-5 text-lg font-black text-white transition hover:border-yellow-400 hover:text-yellow-400 disabled:cursor-not-allowed disabled:opacity-40"
+  className="mt-3 flex w-full items-center justify-center rounded-2xl border border-[#C1B782]/40 bg-[#5B6372]/10 px-6 py-5 text-lg font-black text-white transition hover:border-[#F9DD6F] hover:bg-[#F9DD6F]/10 hover:text-[#F9DD6F] disabled:cursor-not-allowed disabled:opacity-40"
 >
   Comprar ahora
 </button>
@@ -403,38 +505,67 @@ const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
   href={whatsappUrl}
   target="_blank"
   rel="noopener noreferrer"
-  className="mt-3 flex w-full items-center justify-center rounded-2xl bg-green-500 px-6 py-5 text-lg font-black text-white transition hover:bg-green-600"
+  className="mt-3 flex w-full items-center justify-center rounded-2xl border border-[#71705C]/40 bg-[#71705C]/10 px-6 py-4 font-bold text-[#C1B782] transition hover:border-[#C1B782] hover:bg-[#71705C]/20"
 >
-  Consultar por WhatsApp
+  ¿Tienes dudas? Escríbenos
 </a>
           </motion.aside>
         </section>
 
         <section className="mt-10 grid gap-6 lg:grid-cols-[1fr_0.7fr]">
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-8">
-            <h3 className="text-3xl font-black">Descripción</h3>
-            <p className="mt-4 leading-8 text-white/55">
-              {product.description ||
-                "Producto disponible para operaciones automotrices, flotas y maquinaria."}
-            </p>
-          </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-8">
-            <h3 className="text-3xl font-black">Características</h3>
+  <div className="rounded-[2rem] border border-[#5B6372]/30 bg-[#0B0F17] p-8">
+    <div className="mb-5 flex items-center gap-3">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F9DD6F] text-black">
+        <ShieldCheck size={20} />
+      </div>
 
-            <div className="mt-5 grid gap-3">
-              {specs.map((spec) => (
-                <div
-                  key={spec}
-                  className="flex items-center gap-3 text-white/65"
-                >
-                  <CheckCircle2 size={18} className="text-yellow-400" />
-                  {spec}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+      <div>
+        <p className="text-xs font-bold uppercase tracking-widest text-[#C1B782]">
+          Información
+        </p>
+
+        <h3 className="text-2xl font-black">
+          Sobre este producto
+        </h3>
+      </div>
+    </div>
+
+    <p className="leading-8 text-white/55">
+      {product.description ||
+        "Producto disponible para operaciones automotrices, flotas y maquinaria."}
+    </p>
+  </div>
+
+  <div className="rounded-[2rem] border border-[#5B6372]/30 bg-[#0B0F17] p-8">
+    <div className="mb-5">
+      <p className="text-xs font-bold uppercase tracking-widest text-[#C1B782]">
+        Datos del producto
+      </p>
+
+      <h3 className="mt-1 text-2xl font-black">
+        Características
+      </h3>
+    </div>
+
+    <div className="grid gap-3">
+      {specs.map((spec) => (
+        <div
+          key={spec}
+          className="flex items-center gap-3 rounded-xl border border-[#5B6372]/20 bg-[#5B6372]/10 px-4 py-3 text-sm text-white/70"
+        >
+          <CheckCircle2
+            size={18}
+            className="shrink-0 text-[#F9DD6F]"
+          />
+
+          <span>{spec}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</section>
       </div>
     </main>
   );

@@ -85,10 +85,14 @@ export default function Cart() {
                 >
                   <div className="h-[180px] overflow-hidden rounded-[1.5rem] bg-black">
                     <img
-                      src={item.image}
-                      alt={item.name}
-                      className="h-full w-full object-cover"
-                    />
+  src={
+    item.imageUrl?.startsWith("/uploads")
+      ? `${API_URL.replace("/api", "")}${item.imageUrl}`
+      : item.imageUrl
+  }
+  alt={item.name}
+  className="h-full w-full object-cover"
+/>
                   </div>
 
                   <div className="flex flex-col justify-between gap-5">
