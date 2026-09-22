@@ -42,19 +42,25 @@ exports.getProducts = async (req, res) => {
 
     if (search) {
       where.OR = [
-        {
-          name: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-        {
-          size: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-      ];
+  {
+    name: {
+      contains: search,
+      mode: "insensitive",
+    },
+  },
+  {
+    size: {
+      contains: search,
+      mode: "insensitive",
+    },
+  },
+  {
+    brand: {
+      contains: search,
+      mode: "insensitive",
+    },
+  },
+];
     }
 
     const products = await prisma.product.findMany({
@@ -175,7 +181,7 @@ console.log("ROWS:", rows);
   price: Number(row["Precio"] || 0),
   offerPrice: null,
   stock: Number(row["Stock"] || 0),
-  imageUrl: "",
+
   description: row["Descripción"] || "",
   active: true,
 },
@@ -192,7 +198,7 @@ console.log("ROWS:", rows);
   price: Number(row["Precio"] || 0),
   offerPrice: null,
   stock: Number(row["Stock"] || 0),
-  imageUrl: "",
+
   description: row["Descripción"] || "",
   active: true,
 },
