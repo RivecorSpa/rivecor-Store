@@ -72,6 +72,7 @@ model Order {
   paymentProvider  String?     @default("GETNET")
   paymentStatus    String?     @default("PENDING")
   reference        String?
+  stockProcessed   Boolean     @default(false)
   history          Json?
   customer         Customer    @relation(fields: [customerId], references: [id])
   items            OrderItem[]
